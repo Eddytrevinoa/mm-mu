@@ -1,0 +1,243 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #fff;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.site-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 0 1.5% 0 0.4%;
+}
+
+.site-header a {
+  color: inherit;
+  font-weight: 700;
+  letter-spacing: -0.065em;
+  text-decoration: none;
+}
+
+.site-title {
+  font-size: clamp(2.5rem, 4vw, 4.75rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+nav {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  font-size: clamp(1.2rem, 1.55vw, 1.85rem);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 0.13em;
+  text-underline-offset: 0.12em;
+}
+
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+@media (max-width: 700px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .site-title {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    white-space: normal;
+  }
+
+  nav {
+    align-self: flex-end;
+    font-size: 1.25rem;
+  }
+}
+
+.gallery {
+  min-height: calc(100vh - 5rem);
+  display: grid;
+  place-items: center;
+}
+
+.gallery[hidden] {
+  display: none;
+}
+
+.hand-view {
+  width: min(100%, 850px);
+  height: min(78vh, 850px);
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+}
+
+.hand-view canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hand-message {
+  font-size: 0.9rem;
+  letter-spacing: 0;
+}
+
+@media (max-width: 700px) {
+  .gallery {
+    min-height: calc(100vh - 8rem);
+  }
+
+  .hand-view {
+    height: min(65vh, 650px);
+  }
+}
+
+.gallery {
+  position: relative;
+  overflow: hidden;
+}
+
+.hand-view {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.carousel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+  outline-offset: -4px;
+  user-select: none;
+}
+
+.carousel-track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.carousel-card {
+  position: absolute;
+  top: 72%;
+  left: 50%;
+  width: clamp(70px, 8vw, 145px);
+  height: clamp(130px, 25vh, 260px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.carousel.is-dragging .carousel-card { transition: none; }
+.carousel-card img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
+.carousel-card:focus-visible, .carousel-arrow:focus-visible, .image-dialog-close:focus-visible { outline: 2px solid black; outline-offset: 4px; }
+
+.carousel-arrow {
+  position: absolute;
+  top: 72%;
+  z-index: 100;
+  width: clamp(48px, 8vw, 145px);
+  height: clamp(80px, 17vh, 180px);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: transform 250ms ease, opacity 250ms ease;
+}
+.carousel-arrow:hover { transform: translateY(-50%) scale(1.08); }
+.carousel-arrow--previous { right: calc(50% + clamp(50px, 6vw, 110px)); }
+.carousel-arrow--next { left: calc(50% + clamp(50px, 6vw, 110px)); }
+.carousel-arrow svg { width: 100%; height: 100%; overflow: visible; }
+.carousel-arrow path { fill: rgba(255,255,255,.55); stroke: rgba(0,0,0,.62); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+
+.image-dialog {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  padding: 5vh 5vw;
+  border: 0;
+  background: #fff;
+  overflow: hidden;
+}
+.image-dialog[open] { display: grid; place-items: center; }
+.image-dialog::backdrop { background: transparent; }
+.image-dialog-image { display: block; max-width: 90vw; max-height: 88vh; object-fit: contain; }
+.image-dialog-close { position: fixed; z-index: 102; top: 1rem; right: 1.5rem; border: 0; background: transparent; color: #000; font: 300 3rem/1 Arial, sans-serif; cursor: pointer; }
+.image-dialog-arrow { position: fixed; top: 50%; width: clamp(46px, 7vw, 120px); height: clamp(70px, 15vh, 155px); }
+.image-dialog-arrow--previous { left: clamp(8px, 3vw, 50px); }
+.image-dialog-arrow--next { right: clamp(8px, 3vw, 50px); }
+.image-dialog-exiting { position: fixed; pointer-events: none; object-fit: contain; z-index: 1; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+@media (max-width: 700px) {
+  .carousel-card { top: 73%; width: 20vw; height: 23vh; min-height: 100px; }
+  .carousel-arrow { top: 73%; }
+  .carousel-arrow--previous { right: calc(50% + 12vw); }
+  .carousel-arrow--next { left: calc(50% + 12vw); }
+  .image-dialog-arrow { top: 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-card, .carousel-arrow { transition: none; }
+}
+
+/* Keep the entire composition available on small screens, including short landscape viewports. */
+@media (max-width: 700px) {
+  .site-header {
+    gap: .65rem;
+    padding: max(.5rem, env(safe-area-inset-top)) max(.75rem, env(safe-area-inset-right)) .5rem max(.75rem, env(safe-area-inset-left));
+  }
+  nav { gap: .7em; }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  .gallery { min-height: max(420px, calc(100svh - 8.5rem)); }
+  .hand-view { width: 100%; height: min(72svh, 650px); min-height: 320px; }
+  .carousel-card { top: 70%; width: clamp(60px, 19vw, 110px); height: clamp(115px, 26svh, 215px); }
+  .carousel-arrow { top: 70%; width: 52px; height: 82px; }
+  .carousel-arrow--previous { right: calc(50% + 11vw); }
+  .carousel-arrow--next { left: calc(50% + 11vw); }
+  .image-dialog { padding: max(52px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+  .image-dialog-image { max-width: calc(100vw - 32px); max-height: calc(100svh - 100px); }
+  .image-dialog-close { top: max(8px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); min-width: 48px; min-height: 48px; }
+  .image-dialog-arrow { top: 50%; width: 48px; height: 76px; }
+  .image-dialog-arrow--previous { left: max(8px, env(safe-area-inset-left)); right: auto; }
+  .image-dialog-arrow--next { right: max(8px, env(safe-area-inset-right)); left: auto; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .gallery { min-height: max(260px, calc(100svh - 3.5rem)); }
+  .hand-view { height: max(260px, calc(100svh - 3.5rem)); min-height: 0; }
+  .carousel-card { top: 70%; height: 28svh; min-height: 0; }
+  .carousel-arrow { top: 70%; height: 20svh; }
+  .image-dialog-image { max-height: calc(100svh - 24px); max-width: calc(100vw - 140px); }
+  .image-dialog-arrow { top: 50%; }
+}
+@media (max-width: 700px) and (max-height: 500px) and (orientation: landscape) {
+  .gallery { min-height: max(260px, calc(100svh - 8rem)); }
+  .hand-view { height: max(260px, calc(100svh - 8rem)); }
+}
