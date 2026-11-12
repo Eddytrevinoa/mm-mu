@@ -5,24 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Mis Manos. Mis Uñas.">
   <title>Mis Manos. Mis Uñas.</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=7">
   <script type="importmap">
     { "imports": { "three": "./vendor/three.module.js" } }
   </script>
-  <script type="module" src="script.js"></script>
+  <script type="module" src="script.js?v=4"></script>
   <script type="module" src="carousel.js"></script>
+  <script type="module" src="about-hands.js?v=7"></script>
+  <script type="module" src="cursor.js"></script>
+  <script type="module" src="mobile-menu.js"></script>
+  <script type="module" src="parallax.js"></script>
 </head>
 <body>
   <header class="site-header">
     <a class="site-title" href="#gallery">Mis Manos. Mis Uñas.</a>
-    <nav aria-label="Main navigation">
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span></button>
+    <nav id="main-navigation" aria-label="Main navigation">
       <a href="#artist">Artist.</a>
       <a href="#about">About.</a>
       <a href="#gallery" aria-current="page">Gallery.</a>
     </nav>
   </header>
   <main id="content" tabindex="-1">
-    <section class="gallery" aria-label="Gallery">
+    <section class="gallery" data-page="gallery" aria-label="Gallery">
       <div class="hand-view" role="img" aria-label="A black three-dimensional hand slowly rotating">
         <p class="hand-message" role="status">Loading hand…</p>
       </div>
@@ -31,6 +36,32 @@
         <button class="carousel-arrow carousel-arrow--previous" type="button" aria-label="Previous image"><svg viewBox="0 0 100 130" aria-hidden="true"><path d="M91 4H65L5 65l60 61h26L31 65z"/></svg></button>
         <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next image"><svg viewBox="0 0 100 130" aria-hidden="true"><path d="M9 4h26l60 61-60 61H9l60-61z"/></svg></button>
         <span class="visually-hidden carousel-status" aria-live="polite"></span>
+      </div>
+    </section>
+    <section class="text-page artist-page" data-page="artist" lang="es" aria-label="Artista César Jesús Tijerina Lugoleos" hidden>
+      <div class="text-page-inner artist-layout">
+        <div class="artist-portrait"><img src="assets/cesar.jpg" alt="Retrato de César Jesús Tijerina Lugoleos"></div>
+        <div class="page-copy">
+          <p>César Jesús Tijerina Lugoleos es un artista digital y conceptual cuya práctica se desarrolla entre la dirección creativa, la cinematografía, la experimentación visual y los nuevos medios. Es licenciado en Animación y Arte Digital por el Tecnológico de Monterrey, con concentración en Animación 2D, 3D, Desarrollo Visual y Cinematografía. Actualmente se encuentra próximo a concluir la Maestría en Arte Digital y Nuevos Medios en la misma institución.</p>
+          <p>Su trayectoria artística parte de una búsqueda constante por expandir las posibilidades expresivas de los medios digitales, explorando las relaciones entre el cuerpo, la identidad, la memoria, la percepción y la tecnología. Su trabajo se orienta hacia la construcción de experiencias visuales y conceptuales que cuestionan las formas convencionales de representación, integrando lenguajes provenientes del arte contemporáneo, la imagen cinematográfica, la experimentación audiovisual y los entornos digitales. Desde una perspectiva experimental y abstracta, concibe el arte como un espacio de investigación donde las experiencias personales pueden transformarse en reflexiones colectivas. Su práctica busca trascender la dimensión estética de la imagen para explorar sus capacidades narrativas, emocionales y críticas, estableciendo diálogos entre lo íntimo y lo universal, lo físico y lo digital, lo visible y aquello que permanece oculto.</p>
+          <p>Esta aproximación encuentra una expresión particularmente personal en Mis Manos. Mis Uñas., proyecto que surge de su experiencia con la psoriasis ungueal desde la infancia. A través de la reproducción tridimensional, el archivo autobiográfico y la exploración digital, la obra transforma una condición corporal históricamente vinculada al dolor y al ocultamiento en un proceso artístico de reconocimiento, exposición y aceptación.</p>
+          <p>Su dirección artística se caracteriza por una búsqueda de lenguajes experimentales, abstractos y conceptuales, en los que la tecnología funciona como un medio para reinterpretar la experiencia humana y abrir nuevas posibilidades de reflexión sobre nuestra relación con el cuerpo, la imagen y la identidad.</p>
+        </div>
+      </div>
+    </section>
+    <section class="text-page about-page" data-page="about" lang="es" aria-label="Acerca de Mis Manos. Mis Uñas." hidden>
+      <div class="text-page-inner">
+        <div class="about-sculpture" tabindex="0" role="group" aria-label="Escultura interactiva de dos manos. Arrastra horizontalmente o usa las flechas izquierda y derecha para girarlas." aria-describedby="about-sculpture-hint">
+          <p class="about-sculpture-message" role="status">Cargando las manos…</p>
+        </div>
+        <p class="about-sculpture-hint" id="about-sculpture-hint">Arrastra de lado a lado para girar las manos.</p>
+        <div class="page-copy">
+          <p>Mis Manos. Mis Uñas. es una exploración artística y autobiográfica que surge de una condición crónica que ha acompañado al artista desde los tres años: la psoriasis ungueal. A partir de esta experiencia, la obra investiga las relaciones entre el cuerpo, la memoria, la identidad y las formas en que una diferencia física puede transformar nuestra percepción de nosotros mismos y nuestra relación con los demás.</p>
+          <p>La instalación presenta dos reproducciones tridimensionales de las manos del artista, dispuestas sobre un pedestal y concebidas para que el espectador pueda tomarlas, acercarse y observarlas directamente. Este gesto traslada una experiencia corporal íntima al espacio público, transformando aquello que durante años permaneció oculto en una posibilidad de contacto, exposición y reconocimiento.</p>
+          <p>La pieza se acompaña de un archivo visual compuesto por fotografías personales, documentos familiares, registros microscópicos y exploraciones digitales. Estos materiales reconstruyen distintas dimensiones de una misma experiencia, estableciendo relaciones entre la observación médica, la memoria autobiográfica y la interpretación artística. El cuerpo deja de presentarse únicamente como un organismo sujeto al diagnóstico y se convierte también en un territorio de significados, recuerdos y transformaciones.</p>
+          <p>A través de la escultura, la documentación y los nuevos medios, la obra propone una reflexión sobre los límites entre lo considerado normal y aquello que socialmente se percibe como diferente. Las manos, elementos fundamentales del contacto y la expresión humana, se convierten en un espacio donde convergen la vulnerabilidad, la resistencia y la construcción de identidad.</p>
+          <p>Entre el dolor, el ocultamiento y la aceptación, Mis Manos. Mis Uñas. plantea una pregunta central: ¿Qué ocurre cuando una diferencia corporal deja de entenderse como una anomalía y comienza a reconocerse como parte de nuestra identidad? Más que representar una condición médica, la obra busca resignificar una experiencia personal y abrir un diálogo sobre la manera en que habitamos, observamos y aceptamos nuestros propios cuerpos.</p>
+        </div>
       </div>
     </section>
     <dialog class="image-dialog" aria-label="Expanded image">

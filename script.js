@@ -6,11 +6,23 @@ const gallery = document.querySelector('.gallery');
 const view = document.querySelector('.hand-view');
 const message = document.querySelector('.hand-message');
 const pages = new Set(['#artist', '#about', '#gallery']);
+const sections = [...document.querySelectorAll('[data-page]')];
+const siteTitle = document.querySelector('.site-title');
+function syncTitleWidth() {
+  document.documentElement.style.setProperty('--site-title-width', `${siteTitle.getBoundingClientRect().width}px`);
+}
+if ('ResizeObserver' in window) new ResizeObserver(syncTitleWidth).observe(siteTitle);
+else window.addEventListener('resize', syncTitleWidth);
+syncTitleWidth();
 let resizeView = () => {};
 let refreshRenderer = () => {};
+let activeSection = null;
+let navigationVersion = 0;
 
-function updateNavigation() {
+async function updateNavigation(animate = true) {
   const currentPage = pages.has(window.location.hash) ? window.location.hash : '#gallery';
+  const nextSection = sections.find((section) => `#${section.dataset.page}` === currentPage);
+  const version = ++navigationVersion;
   navigationLinks.forEach((link) => {
     if (link.getAttribute('href') === currentPage) {
       link.setAttribute('aria-current', 'page');
@@ -18,16 +30,28 @@ function updateNavigation() {
       link.removeAttribute('aria-current');
     }
   });
-  gallery.hidden = currentPage !== '#gallery';
-  if (!gallery.hidden) resizeView();
+  if (nextSection === activeSection) return;
+  const previous = activeSection;
+  const motionAllowed = animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  sections.forEach((section) => section.getAnimations().forEach((animation) => animation.cancel()));
+  if (previous && motionAllowed) {
+    await previous.animate([{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-12px)' }], { duration: 200, easing: 'ease-in', fill: 'forwards' }).finished.catch(() => {});
+    if (version !== navigationVersion) return;
+  }
+  sections.forEach((section) => { section.hidden = section !== nextSection; });
+  activeSection = nextSection;
+  if (previous) window.scrollTo({ top: 0, behavior: 'instant' });
+  if (nextSection === gallery) resizeView();
   refreshRenderer();
+  if (motionAllowed) nextSection.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 480, easing: 'cubic-bezier(.22, 1, .36, 1)' });
 }
 
-window.addEventListener('hashchange', updateNavigation);
-updateNavigation();
+window.addEventListener('hashchange', () => updateNavigation());
+updateNavigation(false);
 
 try {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.domElement.classList.add('sculpture-canvas');
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 700 ? 1.25 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   view.appendChild(renderer.domElement);
@@ -57,7 +81,8 @@ try {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     // Keep the entire hand in view on narrow screens.
-    camera.position.z = camera.aspect < 0.8 ? 7.8 * 0.8 / camera.aspect : 7.8;
+    const cameraDistance = camera.aspect < 0.8 ? 7.8 * 0.8 / camera.aspect : 7.8;
+    camera.position.z = cameraDistance * (window.innerWidth <= 700 ? .88 : 1);
     camera.updateProjectionMatrix();
     refreshRenderer();
   };
@@ -78,6 +103,9 @@ try {
     lastTime = time;
     if (!reducedMotion.matches) pivot.rotation.y += delta * 0.25;
     renderer.render(scene, camera);
+    if (!renderer.domElement.classList.contains('is-ready')) {
+      requestAnimationFrame(() => renderer.domElement.classList.add('is-ready'));
+    }
     if (!reducedMotion.matches) frame = requestAnimationFrame(animate);
   }
   refreshRenderer = () => {
