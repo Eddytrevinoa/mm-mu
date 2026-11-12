@@ -80,9 +80,13 @@ try {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth <= 700 ? 1.25 : 2));
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
+    const originalHeight = Math.max(320, Math.min(window.innerHeight * .78, 850));
+    camera.fov = window.innerWidth > 700
+      ? THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(35) / 2) * height / originalHeight))
+      : 35;
     // Keep the entire hand in view on narrow screens.
     const cameraDistance = camera.aspect < 0.8 ? 7.8 * 0.8 / camera.aspect : 7.8;
-    camera.position.z = cameraDistance * (window.innerWidth <= 700 ? .88 : .95);
+    camera.position.z = cameraDistance * (window.innerWidth <= 700 ? .88 : .85);
     camera.updateProjectionMatrix();
     refreshRenderer();
   };

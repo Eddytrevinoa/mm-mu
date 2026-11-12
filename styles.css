@@ -111,9 +111,10 @@ a:focus-visible {
   .text-page .page-copy { transform: translate3d(0, var(--parallax-copy, 0px), 0); }
 }
 @media (min-width: 901px) {
-  .artist-page { padding-left: .4%; }
+  .artist-page { padding-left: .4%; padding-right: clamp(1.5rem, 3vw, 4rem); }
   .artist-page .text-page-inner { max-width: none; }
-  .artist-layout { grid-template-columns: var(--site-title-width, 34vw) minmax(0, 1fr); column-gap: max(3rem, calc(47.6vw - var(--site-title-width, 34vw))); }
+  .artist-layout { grid-template-columns: var(--site-title-width, 34vw) minmax(0, 1fr); column-gap: clamp(1rem, 1.2vw, 1.5rem); }
+  .artist-page .page-copy { max-width: none; }
   .artist-page .page-copy p { line-height: 1.5; margin-bottom: 1.15em; }
 }
 .about-page { padding-top: clamp(1.5rem, 4vh, 3rem); }
@@ -168,6 +169,11 @@ a:focus-visible {
 .gallery {
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 701px) {
+  .gallery { overflow: visible; }
+  .hand-view { height: min(calc(78vh + 160px), 1010px); min-height: 480px; }
 }
 
 .hand-view {

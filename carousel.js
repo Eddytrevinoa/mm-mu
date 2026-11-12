@@ -64,7 +64,7 @@ function render() {
     const frontEmphasis = Math.max(0, (depth - .75) / .25);
     const scale = (mobile
       ? .68 + .32 * depth + .30 * frontEmphasis
-      : .76 + .24 * depth + .16 * frontEmphasis) + .3 * frontEmphasis ** 8;
+      : .76 + .24 * depth + .16 * frontEmphasis) + (mobile ? .45 : .3) * frontEmphasis ** 8;
     card.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) rotateY(${-Math.sin(angle) * 18}deg) scale(${scale})`;
     card.style.opacity = "1";
     card.style.zIndex = depth >= 0 ? String(3 + Math.round(depth * 50)) : '1';
