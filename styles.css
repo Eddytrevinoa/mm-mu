@@ -104,7 +104,7 @@ a:focus-visible {
 .artist-portrait img { display: block; width: 100%; height: auto; }
 .page-copy { max-width: 780px; }
 .page-copy h1 { margin: 0 0 2rem; font-size: clamp(2.5rem, 5vw, 5rem); line-height: .98; letter-spacing: -.065em; }
-.page-copy p { margin: 0 0 1.4em; font-size: clamp(1rem, 1.18vw, 1.2rem); line-height: 1.65; }
+.page-copy p { margin: 0 0 1.4em; font-size: clamp(1rem, 1.18vw, 1.2rem); line-height: 1.65; text-align: justify; }
 .about-page .page-copy { max-width: 840px; margin: 0 auto; }
 @media (prefers-reduced-motion: no-preference) {
   .artist-page .artist-portrait, .about-page .about-sculpture { transform: translate3d(0, var(--parallax-visual, 0px), 0); }
@@ -114,6 +114,7 @@ a:focus-visible {
   .artist-page { padding-left: .4%; }
   .artist-page .text-page-inner { max-width: none; }
   .artist-layout { grid-template-columns: var(--site-title-width, 34vw) minmax(0, 1fr); column-gap: max(3rem, calc(47.6vw - var(--site-title-width, 34vw))); }
+  .artist-page .page-copy p { line-height: 1.5; margin-bottom: 1.15em; }
 }
 .about-page { padding-top: clamp(1.5rem, 4vh, 3rem); }
 .about-sculpture { width: 100%; height: clamp(260px, 32vw, 380px); display: grid; place-items: center; touch-action: pan-y; cursor: grab; outline-offset: 4px; }
@@ -121,7 +122,7 @@ a:focus-visible {
 .about-sculpture:focus-visible { outline: 2px solid #000; }
 .about-sculpture canvas { display: block; width: 100%; height: 100%; }
 .about-sculpture-message { font-size: .9rem; }
-.about-sculpture-hint { margin: 0 0 clamp(1.5rem, 3vw, 2.5rem); text-align: center; font-size: .85rem; color: #555; }
+.about-sculpture-hint { margin: 0 0 clamp(1.5rem, 3vw, 2.5rem); text-align: center; font-size: .85rem; font-style: italic; color: #777; }
 @media (prefers-reduced-motion: no-preference) {
   .about-page .page-copy p.reveal-pending { opacity: 0; transform: translateY(24px); transition: opacity 850ms ease, transform 850ms cubic-bezier(.22, 1, .36, 1); }
   .about-page .page-copy p.reveal-pending.revealed { opacity: 1; transform: translateY(0); }
@@ -236,10 +237,11 @@ a:focus-visible {
   border: 0;
   background: #fff;
   overflow: hidden;
+  touch-action: pan-y;
 }
 .image-dialog[open] { display: grid; place-items: center; }
 .image-dialog::backdrop { background: transparent; }
-.image-dialog-image { display: block; max-width: 90vw; max-height: 88vh; object-fit: contain; }
+.image-dialog-image { display: block; max-width: 90vw; max-height: 88vh; object-fit: contain; touch-action: pan-y; user-select: none; -webkit-user-drag: none; }
 .image-dialog-close { position: fixed; z-index: 102; top: 1rem; right: 1.5rem; border: 0; background: transparent; color: #000; font: 300 3rem/1 Arial, sans-serif; cursor: pointer; }
 .image-dialog-arrow { position: fixed; top: 50%; width: clamp(46px, 7vw, 120px); height: clamp(70px, 15vh, 155px); }
 .image-dialog-arrow--previous { left: clamp(8px, 3vw, 50px); }

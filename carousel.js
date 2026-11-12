@@ -25,6 +25,8 @@ let closing = false;
 let centering = false;
 let switching = false;
 let imageRequest = 0;
+let viewerSwipe = null;
+let suppressViewerClick = false;
 
 const cards = files.map((file, index) => {
   const button = document.createElement('button');
@@ -224,7 +226,7 @@ function openImage(card, file) {
   closeButton.focus();
 }
 
-async function switchImage(direction) {
+async function switchImage(direction, fromSwipe = false) {
   if (switching || closing || !dialog.open) return;
   switching = true;
   imageRequest++;
@@ -234,8 +236,10 @@ async function switchImage(direction) {
   const outgoing = enlarged.cloneNode();
   outgoing.className = 'image-dialog-exiting';
   outgoing.setAttribute('aria-hidden', 'true');
+  outgoing.style.transform = '';
   Object.assign(outgoing.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
   dialog.appendChild(outgoing);
+  enlarged.style.transform = '';
   selectedCard.style.visibility = '';
   selectedCard = nextCard;
   nextCard.style.visibility = 'hidden';
@@ -249,8 +253,9 @@ async function switchImage(direction) {
 
   if (!reducedMotion.matches) {
     const options = { duration: 350, easing: 'cubic-bezier(.22, 1, .36, 1)' };
-    const outgoingMotion = outgoing.animate([{ transform: 'translateX(0) scale(1)', opacity: 1 }, { transform: `translateX(${-direction * 80}px) scale(.92)`, opacity: 0 }], options);
-    const incomingMotion = enlarged.animate([{ transform: `translateX(${direction * 80}px) scale(.92)`, opacity: 0 }, { transform: 'translateX(0) scale(1)', opacity: 1 }], options);
+    const distance = fromSwipe ? Math.min(dialog.clientWidth * .35, 180) : 80;
+    const outgoingMotion = outgoing.animate([{ transform: 'translateX(0) scale(1)', opacity: 1 }, { transform: `translateX(${-direction * distance}px) scale(.96)`, opacity: 0 }], options);
+    const incomingMotion = enlarged.animate([{ transform: `translateX(${direction * distance}px) scale(.96)`, opacity: 0 }, { transform: 'translateX(0) scale(1)', opacity: 1 }], options);
     await Promise.all([outgoingMotion.finished, incomingMotion.finished].map((finished) => finished.catch(() => {})));
   }
   outgoing.remove();
@@ -293,5 +298,47 @@ dialog.addEventListener('keydown', (event) => {
   }
 });
 dialog.addEventListener('cancel', (event) => { event.preventDefault(); closeImage(); });
-dialog.addEventListener('click', (event) => { if (event.target === dialog) closeImage(); });
+dialog.addEventListener('click', (event) => { if (event.target === dialog && !suppressViewerClick) closeImage(); });
+
+dialog.addEventListener('pointerdown', (event) => {
+  if (event.pointerType !== 'touch' || !event.isPrimary || switching || closing || event.target.closest('button')) return;
+  viewerSwipe = { id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX, lastTime: performance.now(), velocity: 0, axis: null, offset: 0 };
+});
+dialog.addEventListener('pointermove', (event) => {
+  if (!viewerSwipe || event.pointerId !== viewerSwipe.id) return;
+  const dx = event.clientX - viewerSwipe.x;
+  const dy = event.clientY - viewerSwipe.y;
+  if (!viewerSwipe.axis) {
+    if (Math.hypot(dx, dy) < 8) return;
+    viewerSwipe.axis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+    if (viewerSwipe.axis === 'horizontal') {
+      enlarged.getAnimations().forEach((animation) => animation.cancel());
+      dialog.setPointerCapture(event.pointerId);
+    }
+  }
+  if (viewerSwipe.axis !== 'horizontal') return;
+  const now = performance.now();
+  viewerSwipe.velocity = (event.clientX - viewerSwipe.lastX) / Math.max(now - viewerSwipe.lastTime, 1);
+  viewerSwipe.lastX = event.clientX;
+  viewerSwipe.lastTime = now;
+  viewerSwipe.offset = Math.max(-dialog.clientWidth * .7, Math.min(dialog.clientWidth * .7, dx));
+  enlarged.style.transform = `translateX(${viewerSwipe.offset}px)`;
+});
+function finishViewerSwipe(event) {
+  if (!viewerSwipe || event.pointerId !== viewerSwipe.id) return;
+  const swipe = viewerSwipe;
+  viewerSwipe = null;
+  if (swipe.axis !== 'horizontal') return;
+  suppressViewerClick = true;
+  setTimeout(() => { suppressViewerClick = false; }, 0);
+  const shouldAdvance = event.type !== 'pointercancel' && (Math.abs(swipe.offset) > Math.min(90, dialog.clientWidth * .2) || (Math.abs(swipe.offset) > 18 && Math.abs(swipe.velocity) > .45));
+  if (shouldAdvance) {
+    switchImage(swipe.offset < 0 ? 1 : -1, true);
+  } else {
+    enlarged.style.transform = '';
+    if (!reducedMotion.matches) enlarged.animate([{ transform: `translateX(${swipe.offset}px)` }, { transform: 'translateX(0)' }], { duration: 240, easing: 'cubic-bezier(.22, 1, .36, 1)' });
+  }
+}
+dialog.addEventListener('pointerup', finishViewerSwipe);
+dialog.addEventListener('pointercancel', finishViewerSwipe);
 render();

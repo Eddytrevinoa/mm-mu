@@ -82,7 +82,7 @@ try {
     camera.aspect = width / height;
     // Keep the entire hand in view on narrow screens.
     const cameraDistance = camera.aspect < 0.8 ? 7.8 * 0.8 / camera.aspect : 7.8;
-    camera.position.z = cameraDistance * (window.innerWidth <= 700 ? .88 : 1);
+    camera.position.z = cameraDistance * (window.innerWidth <= 700 ? .88 : .95);
     camera.updateProjectionMatrix();
     refreshRenderer();
   };
