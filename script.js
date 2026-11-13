@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OBJLoader } from './vendor/OBJLoader.js';
+import { GLTFLoader } from './vendor/GLTFLoader.js';
 
 const navigationLinks = document.querySelectorAll('nav a');
 const gallery = document.querySelector('.gallery');
@@ -129,7 +129,8 @@ try {
     refreshRenderer();
   });
 
-  new OBJLoader().load('./assets/hand.obj', (hand) => {
+  new GLTFLoader().load('./assets/hand.glb', (gltf) => {
+    const hand = gltf.scene;
     const bounds = new THREE.Box3().setFromObject(hand);
     const center = bounds.getCenter(new THREE.Vector3());
     const size = bounds.getSize(new THREE.Vector3());
@@ -137,7 +138,7 @@ try {
     hand.scale.setScalar(3.9 / Math.max(size.x, size.y, size.z));
     // Center in scaled coordinates, then rotate around the hand's center.
     hand.position.copy(center).multiplyScalar(-hand.scale.x);
-    const material = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.42, metalness: 0.12 });
+    const material = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.42, metalness: 0.12, flatShading: true });
     hand.traverse((child) => {
       if (child.isMesh) child.material = material;
     });

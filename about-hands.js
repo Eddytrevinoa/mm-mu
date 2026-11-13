@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OBJLoader } from './vendor/OBJLoader.js';
+import { GLTFLoader } from './vendor/GLTFLoader.js';
 
 const section = document.querySelector('.about-page');
 const view = document.querySelector('.about-sculpture');
@@ -72,7 +72,8 @@ function resize() {
 
 function model(url, material, angle, x, y, z, tilt) {
   return new Promise((resolve, reject) => {
-    new OBJLoader().load(url, (hand) => {
+    new GLTFLoader().load(url, (gltf) => {
+      const hand = gltf.scene;
       const bounds = new THREE.Box3().setFromObject(hand);
       const center = bounds.getCenter(new THREE.Vector3());
       const size = bounds.getSize(new THREE.Vector3());
@@ -115,9 +116,11 @@ async function initialize() {
     scene.add(sculpture);
     resize();
     const material = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: .34, metalness: .12 });
+    const rightMaterial = material.clone();
+    rightMaterial.flatShading = true;
     const [right, left] = await Promise.all([
-      model('./assets/hand.obj', material, 2.15, -.35, .24, .3, -.25),
-      model('./assets/left-hand.obj', material, -2.15, .38, -.22, -.35, .2)
+      model('./assets/hand.glb', rightMaterial, 2.15, -.35, .24, .3, -.25),
+      model('./assets/left-hand.glb', material, -2.15, .38, -.22, -.35, .2)
     ]);
     handPose.add(left, right);
     loaded = true;
