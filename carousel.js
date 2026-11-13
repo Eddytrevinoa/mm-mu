@@ -1,6 +1,5 @@
 const files = [
   ...Array.from({ length: 7 }, (_, i) => `MMMU_Grain_0${i + 1}.jpg`),
-  'MMMU_Grain_01_PSD.jpg',
   ...Array.from({ length: 4 }, (_, i) => `microscopy-0${i + 1}.png`),
   '01.jpg', '02_Corrected.jpg', '03.jpg', '04_Corrected.jpg', '05_Corrected.jpg',
   '07_Corrected.jpg', '08.jpg', '09_Corrected.jpg', '010.jpg', '011.jpg'
@@ -33,7 +32,7 @@ const cards = files.map((file, index) => {
   const image = document.createElement('img');
   button.type = 'button';
   button.className = 'carousel-card';
-  const label = index < 8 ? `visual composition ${index + 1}` : index < 12 ? `microscopy image ${index - 7}` : `documentation image ${index - 11}`;
+  const label = index < 7 ? `visual composition ${index + 1}` : index < 11 ? `microscopy image ${index - 6}` : `documentation image ${index - 10}`;
   button.setAttribute('aria-label', `Open ${label}`);
   image.src = `./assets/gallery/thumbs/${file}`;
   image.alt = '';
